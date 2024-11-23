@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    "./TrainingPlan_Team"
+  ],
+  "graphs": {
+    "team": "./TrainingPlan_Team/team.py:team"
+  },
+  "env": "./TrainingPlan_Team/.env"
+}
