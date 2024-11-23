@@ -9,38 +9,39 @@ dotenv.load_dotenv("TrainingPlan_Team/.env")
 # %%
 llm = ChatOpenAI(temperature=0.0, model_name="gpt-4o-mini")
 
+
 def agent(state: TeamState):
     """Plan Outline Generator
     This agent is responsible for generating a plan outline for the given question.
     """
     prompt = textwrap.dedent("""
-        You are an experiences dog trainer. Given a question, you generate a plan outline.
-        The plan outline breaks the question down into smaller steps. Typical steps are 'getting the behaviour',
-        'increasing the duration', 'adding distractions', or 'increasing the distance'. Your job is to identify those
-        steps which are necessary to reach the goal addressed in the question. Only include the steps that are
-        necessary to reach the goal. Do not include steps that are not necessary.
-        Once you have defined the steps, order them. Typically, a trainer will start by 'getting the behaviour' by e.g.
-        luring, targetting, or capturing. Then, they will introduce an intermediate cue. This intermediate cue differs 
-        from the final cue and can be e.g. a hand signal. If they got the behaviour by
-        targetting or luring, it might be a good idea to convert this signal into the cue. Before we move on, it is
-        important that there cue works without any luring component, as only then we are sure that the dog understood 
-        the behaviour and paired it with the intermediate cue. Once we have the intermediate cue, we can start
-        introducing mild distractions. When the dog is able to hold the behaviour despite these distractions,
-        we start introducing some distance. Only then we work on duration. Once we have done this, we add further distractions. 
-        Only then we can introduce the final cue.
-        Remember, this is just an overview. It is your job to identify the steps that are necessary to reach the goal.
-        Do not include steps that are not necessary.
-        
-        As an example, if the question is 'My dog sits for 10 seconds. I want to extend this duration to 25 seconds.',
-        the plan outline would be:
-        1. Introduce duration: Increase duration from 10 to 25 seconds
+You are an experienced dog trainer specializing in creating precise, minimalistic training plans. Your task is to generate a plan outline that includes only the necessary steps to achieve the stated goal. 
+
+1. **Evaluate the current status**: Begin by identifying what the dog can already do (e.g., the existing behavior or skill level mentioned in the question). Exclude any steps that are already accomplished or unnecessary for the stated goal.
+2. **Define necessary steps only**: Based on the current status, outline only the steps that are required to progress toward the goal. Avoid including irrelevant or redundant steps. 
+   - For example, if the behavior is already learned, skip "getting the behavior."
+   - If no distractions or distance are part of the goal, do not include those steps.
+3. **Be concise and goal-focused**: Provide only the steps that directly address the client’s question. Avoid adding general training advice, such as "adding distractions" or "introducing a final cue," unless explicitly required to achieve the goal.
+
+### Example:
+**Question**: "My dog sits for 10 seconds. I want to extend this duration to 25 seconds."
+**Correct Plan Outline**:
+- Gradually increase the duration from 10 seconds to 25 seconds in small increments.
+
+**Incorrect Plan Outline**:
+1. Getting the behavior: Ensure the dog can reliably perform the sit command.
+2. Increasing the duration: Gradually increase the time...
+3. Adding distractions: Introduce mild distractions...
+4. Final cue: Once the dog can sit...
+
+Remember, your job is to write the most efficient and minimalistic plan possible to achieve the goal. Avoid adding unnecessary steps or advice that is not directly related to the stated goal.
         """)
     task_prompt = textwrap.dedent("""
-        Here is the goal of our client:
-        
-        {question}
-        
-        Please write the plan outline.
+Here is the goal of our client:
+
+{question}
+
+Based on the current status provided in the question, write a concise and minimalistic plan outline that includes only the necessary steps to achieve the goal. Avoid unnecessary or irrelevant steps.
         """)
     messages = [
         SystemMessage(content=prompt),
@@ -51,5 +52,3 @@ def agent(state: TeamState):
 
     outline = llm.invoke(messages)
     return {"outline_plan": outline.content}
-
-
