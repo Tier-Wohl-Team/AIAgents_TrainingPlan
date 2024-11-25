@@ -13,7 +13,7 @@ from states.TeamState import TeamState
 from states.BehaviorState import BehaviorState
 from agents.distance_duration_agent import agent as distance_duration_agent
 from agents.welfare_specialist import welfare_specialist
-from agents.outline_writer import agent as outline_writer
+from agents.OutlineWriter import agent as outline_writer
 from agents.distributor import agent as distributor
 
 # %% distance duration team
