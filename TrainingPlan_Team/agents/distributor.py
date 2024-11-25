@@ -1,11 +1,13 @@
 import json
 import textwrap
-
+import dotenv
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import Send
 
 from states.TeamState import TeamState
+
+dotenv.load_dotenv("TrainingPlan_Team/.env")
 
 llm_json_mode = ChatOpenAI(temperature=0.0, model_name="gpt-4o-mini",
                            model_kwargs={"response_format": {"type": "json_object"}})
