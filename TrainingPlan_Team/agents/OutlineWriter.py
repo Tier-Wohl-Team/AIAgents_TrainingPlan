@@ -1,11 +1,13 @@
 # %% imports
 import textwrap
+
+import dotenv
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_openai import ChatOpenAI
 
 from agents.BaseAgent import BaseAgent
 from states.state_types import TeamState
-
+dotenv.load_dotenv("../.env")
 
 class OutlineWriter(BaseAgent):
     NAME = "OutlineWriter"

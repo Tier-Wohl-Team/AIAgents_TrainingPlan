@@ -1,32 +1,20 @@
+import pytest
 import json
-import textwrap
-import dotenv
+from agents.SpecialistsTeamLeader import SpecialistsTeamLeader
 from langchain_core.messages import SystemMessage, HumanMessage
-from langchain_openai import ChatOpenAI
-from langgraph.constants import Send
-
-from states.TeamState import TeamState
-
-dotenv.load_dotenv("TrainingPlan_Team/.env")
-
-llm_json_mode = ChatOpenAI(temperature=0.0, model_name="gpt-4o-mini",
-                           model_kwargs={"response_format": {"type": "json_object"}})
 
 
-def agent(state: TeamState):
-    """Distribution Agent
-    This agent is responsible for extracting the training sections from the plan and handing them to the
-    specialized agents.
+@pytest.mark.integration
+def test_specialists_team_leader_llm_response():
+    # Example input for the LLM
+    example_training_plan = """
+    1. Sit on the cue
+    2. Extend the duration of the sit from 10 to 25 seconds
+    3. Stay in the Sit even when I throw a ball
     """
-    node_mapping = {
-        "duration": "distance_duration_welfare_graph",
-        "distance": "distance_duration_welfare_graph",
-        "cue introduction": "cue_welfare_graph",
-        "distraction": "distraction_specialist",
-        "other": "generalist",
-    }
 
-    prompt = textwrap.dedent("""
+    # Construct the prompt
+    prompt = """
         You are an experiences dog trainer. Given a training plan, you identify and extract all specific training 
         steps. For each step, you identify
         the behavior, the current status and the goal the trainer wants to reach.
@@ -40,7 +28,7 @@ def agent(state: TeamState):
         - cue introduction: the dog should show a behaviour when the trainer says a specific word. The goal of a cue introduction is always a string.
         - distractions: the dog should show a behaviour even when there are distractions. The goal of a distractions is always a string.
         The keys "status" and "goal" describe the current status and the goal the trainer wants to reach.
-        
+
         Example:
         {
             "training_steps": [
@@ -67,13 +55,26 @@ def agent(state: TeamState):
                 }
             ]
         }
-    """)
-    print(state["outline_plan"])
-    distance_duration = llm_json_mode.invoke(
-        [SystemMessage(content=prompt)] + [HumanMessage(content=state["outline_plan"])])
-    training = json.loads(distance_duration.content)
+    """
+
+    # Call the LLM
+    llm = SpecialistsTeamLeader.LLM
+    response = llm.invoke([SystemMessage(content=prompt)] + [HumanMessage(content=example_training_plan)])
+
+    # Parse the response as JSON
+    try:
+        training = json.loads(response.content)
+    except json.JSONDecodeError as e:
+        pytest.fail(f"Response is not valid JSON: {e}")
+
+    # Validate the JSON structure
+    assert "training_steps" in training, "The key 'training_steps' is missing from the JSON response."
+    assert isinstance(training["training_steps"], list), "'training_steps' should be a list."
+
     for step in training["training_steps"]:
-        print("Sending to: ", node_mapping.get(step["mode"], "generalist"))
-    return [Send(node_mapping.get(step["mode"], "generalist"), step)
-            for step in training["training_steps"]
-            ]
+        assert isinstance(step, dict), "Each step in 'training_steps' should be a dictionary."
+        for key in ["task", "behavior", "mode", "status", "goal"]:
+            assert key in step, f"The key '{key}' is missing in a training step."
+            assert step[key] is not None, f"The key '{key}' in a training step should not be None."
+
+    print("Integration test passed: The LLM response is valid and follows the specified format.")
