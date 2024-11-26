@@ -19,7 +19,6 @@ class DistanceDurationSpecialist(BaseAgent):
     LLM = ChatOpenAI(temperature=0.0, model_name="gpt-4o-mini")
     # Get the absolute path to the YAML file
     CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..\\configs\\distance_duration_trials.yaml")
-    print(CONFIG_PATH)
     with open(CONFIG_PATH, "r") as file:
         TRIALS = yaml.safe_load(file)
 
