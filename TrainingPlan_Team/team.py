@@ -10,7 +10,7 @@ import os
 sys.path.append(os.path.abspath("./TrainingPlan_Team"))  # Adjust the path as needed
 # %% import the agents
 from states.state_types import TeamState, BehaviorState
-from agents.distance_duration_agent import agent as distance_duration_agent
+from agents.DistanceDurationSpecialist import agent as distance_duration_agent
 from agents.welfare_specialist import welfare_specialist
 from agents.OutlineWriter import OutlineWriter
 from agents.SpecialistsTeamLeader import SpecialistsTeamLeader
