@@ -16,4 +16,7 @@ class BehaviorState(TypedDict):
     status: float
     goal: float
     draft_plan: str
-    plans: Annotated[list[tuple[str, str]], operator.add]
+    welfare_review: str
+    iteration_count: int
+    is_finished: bool
+    plans: Annotated[List[tuple[str, str]], operator.add] # This should overwrite the TeamState plans

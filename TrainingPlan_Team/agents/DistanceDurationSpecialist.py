@@ -37,7 +37,7 @@ class DistanceDurationSpecialist(BaseAgent):
         steps = [key for key in key_source.keys() if state["status"] <= key <= state["goal"]]
         training_steps = [{step: key_source[step]} for step in steps]
 
-        spector_backstory = textwrap.dedent("""
+        background_story = textwrap.dedent("""
             You are an experienced dog trainer with a special focus on writing training plans for novice trainers.
             """)
         task_prompt = textwrap.dedent("""
@@ -53,7 +53,7 @@ class DistanceDurationSpecialist(BaseAgent):
             additional training information.
             """)
         messages = [
-            SystemMessage(content=spector_backstory),
+            SystemMessage(content=background_story),
             HumanMessage(content=task_prompt.format(
                 behavior=state["behavior"],
                 mode=state["mode"],
