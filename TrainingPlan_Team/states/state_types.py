@@ -5,6 +5,7 @@ from typing import TypedDict, List, Annotated
 
 class TeamState(TypedDict):
     question: str
+    internet_research_results: List[str]
     outline_plan: str
     plans: Annotated[list[tuple[str, str]], operator.add]
     final_plan: str
