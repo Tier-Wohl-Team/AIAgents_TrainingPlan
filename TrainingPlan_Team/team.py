@@ -53,7 +53,7 @@ team_graph_builder.add_edge("Collector", END)
 team = team_graph_builder.compile()
 
 # %% test graph
-# question = "My dog sits for 10 seconds. I want to extend this duration to 25 seconds."
+# question = "When retrieving,, my dog drops the ball 2 meters in front of me. I want him to deliver to hand."
 # for s in team.stream({"question": question}):
-#    print(s)
+#   print(s)
 

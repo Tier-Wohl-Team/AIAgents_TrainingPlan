@@ -95,7 +95,7 @@ class SpecialistsTeamLeader(BaseAgent):
             [SystemMessage(content=prompt)] + [HumanMessage(content=state["outline_plan"])])
         training = json.loads(distance_duration.content)
         # for step in training["training_steps"]:
-        #     print("Sending to: ", node_mapping.get(step["mode"], "generalist"))
+        #     print("Sending to: ", node_mapping.get(step["mode"], "other"))
         return [Send(node_mapping.get(step["mode"], "other"), step)
                 for step in training["training_steps"]
                 ]
