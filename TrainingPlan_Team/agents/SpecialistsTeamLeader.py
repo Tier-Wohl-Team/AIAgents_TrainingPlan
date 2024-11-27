@@ -20,26 +20,28 @@ class SpecialistsTeamLeader(BaseAgent):
     LLM_MODEL = "gpt-4o-mini"
     LLM = ChatOpenAI(temperature=0.0, model_name="gpt-4o-mini",
                      model_kwargs={"response_format": {"type": "json_object"}})
+    NODE_MAPPING = None  # This has to be set by the user. At the minimum, it has to have a 'other' mapping
 
-    # NODE_MAPPING = {
-    #     "duration": DurationTeam.Name,
-    #     "distance": DistanceAgent.Name,
-    #     "cue introduction": CueAgent.Name,
-    #     "distraction": DistractionAgent.Name,
-    #     "other": GeneralistAgent.Name,
-    # }
-    NODE_MAPPING = {
-        "duration": "distance_duration_welfare_graph",
-        "distance": "distance_duration_welfare_graph",
-        "cue introduction": "cue_welfare_graph",
-        "distraction": "distraction_specialist",
-        "other": "generalist",
-    }
+    @classmethod
+    def task_team_mapping(cls, mapping):
+        """
+        Dynamically sets the NODE_MAPPING for the class.
+
+        Args:
+            mapping (dict): A dictionary mapping modes to team names.
+        """
+        cls.NODE_MAPPING = mapping
 
     @staticmethod
     def action(state: TeamState):
         llm = SpecialistsTeamLeader.LLM
         SpecialistsTeamLeader.greetings()
+
+        if SpecialistsTeamLeader.NODE_MAPPING is None:
+            raise ValueError(
+                "NODE_MAPPING is not set. Please configure NODE_MAPPING using "
+                "`SpecialistsTeamLeader.set_node_mapping(mapping)` before calling `action`."
+            )
 
         node_mapping = SpecialistsTeamLeader.NODE_MAPPING
 
@@ -94,6 +96,6 @@ class SpecialistsTeamLeader(BaseAgent):
         training = json.loads(distance_duration.content)
         # for step in training["training_steps"]:
         #     print("Sending to: ", node_mapping.get(step["mode"], "generalist"))
-        return [Send(node_mapping.get(step["mode"], "generalist"), step)
+        return [Send(node_mapping.get(step["mode"], "other"), step)
                 for step in training["training_steps"]
                 ]

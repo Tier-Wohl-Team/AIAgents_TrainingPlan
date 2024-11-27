@@ -7,6 +7,7 @@ class TeamState(TypedDict):
     question: str
     outline_plan: str
     plans: Annotated[List[tuple[str, str]], operator.add]
+    final_plan: str
 
 
 class BehaviorState(TypedDict):
