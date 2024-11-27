@@ -48,14 +48,17 @@ class SpecialistsTeamLeader(BaseAgent):
             steps. For each step, you identify
             the behavior, the current status and the goal the trainer wants to reach.
             Return JSON with the single key "training_steps" and the value a list of dictionaries. 
-            Each dictionary has five keys: "task", "behavior", "mode", "status" and "goal". The key "task" is the original 
-            text in the training plan used to extract this specific step. The key "behavior" defines the behavior 
-            the trainer wants to trains. The key "mode" can have one of the values "distance", "duration", 
-            "cue introduction", "distractions". These have the following meanings:
+            Each dictionary has five keys: "task", "behavior", "mode", "status" and "goal". The key "task" is the 
+            original text in the training plan used to extract this specific step. The key "behavior" defines the 
+            behavior the trainer wants to trains. The key "mode" can have one of the values "distance", "duration", 
+            "cue introduction", "distractions", or "other". These have the following meanings:
+            
             - distance: the trainer wants to increase the distance of the dog to the trainer or an object. The status and the goal of a distance are always floats.
             - duration: the trainer wants to increase the duration of the behavior. The status and the goal of a duration are always floats.
             - cue introduction: the dog should show a behaviour when the trainer says a specific word. The goal of a cue introduction is always a string.
             - distractions: the dog should show a behaviour even when there are distractions. The goal of a distractions is always a string.
+            - other: use this mode if and only if you can not assign the step to any of the other modes. 
+            
             The keys "status" and "goal" describe the current status and the goal the trainer wants to reach.
             
             Example:
