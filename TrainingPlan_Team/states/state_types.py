@@ -6,7 +6,7 @@ from typing import TypedDict, List, Annotated
 class TeamState(TypedDict):
     question: str
     outline_plan: str
-    plans: Annotated[List[tuple[str, str]], operator.add]
+    plans: Annotated[list[tuple[str, str]], operator.add]
     final_plan: str
 
 

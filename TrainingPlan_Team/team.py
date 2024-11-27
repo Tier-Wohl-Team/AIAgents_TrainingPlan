@@ -55,5 +55,5 @@ team = team_graph_builder.compile()
 # %% test graph
 # question = "My dog sits for 10 seconds. I want to extend this duration to 25 seconds."
 # for s in team.stream({"question": question}):
-#     print(s)
+#    print(s)
 
