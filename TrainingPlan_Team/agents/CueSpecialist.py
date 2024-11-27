@@ -36,9 +36,19 @@ class CueSpecialist(BaseAgent):
                 the cue is given BEFORE the behavior is initiated.
             """)
         task_prompt = textwrap.dedent("""
-                Please write a training plan to put the behaviour {behavior} under cue control. The goal is to give the novice 
-                trainer a detailed progression plan which the novice trainer can follow step by step. The current status is
-                {status} and the goal is to reach {goal}.
+                Please write a training plan to put the behaviour {behavior} under cue control. 
+                
+                The current status is
+                
+                {status} 
+                
+                The goal is to reach the following status:
+            
+                {goal}
+                
+                In your training plan, start by stating the current status and then the goal. Next, develop a 
+                detailed progression plan for the novice trainer. Clearly state what the novice trainer should do
+                and how he should react when the dog is not performing as expected. 
             """)
         messages = [
             SystemMessage(content=background_story),
