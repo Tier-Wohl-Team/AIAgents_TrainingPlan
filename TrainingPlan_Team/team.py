@@ -6,6 +6,7 @@ sys.path.append(os.path.abspath("./TrainingPlan_Team"))  # Adjust the path as ne
 
 from langgraph.constants import START, END
 from langgraph.graph import StateGraph
+from langgraph.checkpoint.memory import MemorySaver
 
 from teams.SpecialistWelfareTeam import SpecialistWelfareTeam
 from teams.BehaviorResearchTeam import BehaviorResearchTeam
@@ -53,11 +54,15 @@ team_graph_builder.add_edge(distraction_team.name, "Collector")
 team_graph_builder.add_edge(generalist_team.name, "Collector")
 team_graph_builder.add_edge("Collector", END)
 # %% compile the team graph
-team = team_graph_builder.compile()
+memory = MemorySaver()
+
+team = team_graph_builder.compile(checkpointer=memory)
 
 # # %% test graph
-# question = "I want to teach my dog laser directionals"
-# for s in team.stream({"question": question}):
-#   print(s)
-#
-
+# config = {"configurable": {"thread_id": "1"}}
+# question = "My dog sits on cue for 10 seconds. I want to extend this duration to 25 seconds."
+# for s in team.stream({"question": question}, config=config):
+#     print(s)
+# # %%
+# bla = team.get_state(config=config)
+# print(bla)
