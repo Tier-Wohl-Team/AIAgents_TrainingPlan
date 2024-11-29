@@ -29,3 +29,4 @@ class BehaviorResearchState(TypedDict):
     handler_input: Annotated[List[tuple[str, str]], operator.add]
     asked_human: bool
     outline_plan: str
+    wrote_plan: bool

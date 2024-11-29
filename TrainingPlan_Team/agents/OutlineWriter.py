@@ -6,7 +6,8 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_openai import ChatOpenAI
 
 from agents.BaseAgent import BaseAgent
-from states.state_types import TeamState
+from states.state_types import BehaviorResearchState
+
 dotenv.load_dotenv("../.env")
 
 class OutlineWriter(BaseAgent):
@@ -15,7 +16,7 @@ class OutlineWriter(BaseAgent):
     LLM = ChatOpenAI(temperature=0.0, model_name=LLM_MODEL)
 
     @staticmethod
-    def action(state: TeamState):
+    def action(state: BehaviorResearchState):
         llm = OutlineWriter.LLM
         OutlineWriter.greetings()
 
@@ -47,21 +48,40 @@ class OutlineWriter(BaseAgent):
         
         Remember, your job is to write the most efficient and minimalistic plan possible to achieve the goal. Avoid 
         adding unnecessary steps or advice that is not directly related to the stated goal.
-                """)
+    
+        """)
         task_prompt = textwrap.dedent("""
         Here is the goal of our client:
         
         {question}
         
+        Additional information on the goal found in the internet:
+        
+        {internet_research_results}
+        
+        Additional information on the goal from the handler of the animal:
+        
+        {handler_input}
+        
         Based on the current status provided in the question, write a concise and minimalistic plan outline that 
         includes only the necessary steps to achieve the goal. Avoid unnecessary or irrelevant steps.
+        
+        If you don't have enough information about how to train the goal of the client and want additional information 
+        from the internet, just answer with "I need more information".
+
                 """)
+        internet_research_results = state.get("internet_research_results", "")
+        handler_input = state.get("handler_input", "")
         messages = [
             SystemMessage(content=background_story),
             HumanMessage(content=task_prompt.format(
                 question=state["question"],
+                internet_research_results=internet_research_results,
+                handler_input=handler_input,
             ))
         ]
 
         outline = llm.invoke(messages)
+        print(outline.content)
         return {"outline_plan": outline.content}
+
