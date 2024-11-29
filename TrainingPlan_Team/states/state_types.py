@@ -22,3 +22,10 @@ class BehaviorState(TypedDict):
     iteration_count: int
     is_finished: bool
     plans: Annotated[List[tuple[str, str]], operator.add] # This should overwrite the TeamState plans
+
+class BehaviorResearchState(TypedDict):
+    question: str
+    internet_research_results: List[str]
+    handler_input: Annotated[List[tuple[str, str]], operator.add]
+    asked_human: bool
+    outline_plan: str

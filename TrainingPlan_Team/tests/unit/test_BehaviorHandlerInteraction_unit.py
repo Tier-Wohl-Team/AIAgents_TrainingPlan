@@ -1,17 +1,15 @@
-import pytest
+import unittest
 from unittest.mock import patch
 from states.state_types import BehaviorResearchState
 from agents.BehaviorHandlerInteraction import BehaviorHandlerInteraction
 
-@pytest.fixture
-def mock_handler_input():
-    with patch.object(BehaviorHandlerInteraction, 'handler_input_method') as mock_input:
-        yield mock_input
 
-def test_action(mock_handler_input):
+@patch.object(BehaviorHandlerInteraction, 'handler_input_method')
+def test_action(self, mock_input):
     # Arrange
-    mock_handler_input.side_effect = [
+    mock_input.side_effect = [
         "The dog is calm during training.",
+        "Try extending the sit duration incrementally."
     ]
 
     start_state = BehaviorResearchState(
@@ -23,6 +21,7 @@ def test_action(mock_handler_input):
     result = BehaviorHandlerInteraction.action(start_state)
 
     # Assert
-    assert len(result["handler_input"]) == 1
-    assert result["asked_human"] is True
-    assert result["handler_input"][0]["answer"] == "The dog is calm during training."
+    self.assertEqual(len(result["handler_input"]), 2)
+    self.assertTrue(result["asked_human"])
+    self.assertEqual(result["handler_input"][0]["answer"], "The dog is calm during training.")
+    self.assertEqual(result["handler_input"][1]["answer"], "Try extending the sit duration incrementally.")

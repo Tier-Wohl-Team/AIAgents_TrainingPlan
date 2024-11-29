@@ -8,7 +8,7 @@ from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 
 from agents.BaseAgent import BaseAgent
-from states.state_types import TeamState
+from states.state_types import BehaviorResearchState
 from tavily import TavilyClient
 dotenv.load_dotenv("TrainingPlan_Team/.env")
 
@@ -28,7 +28,7 @@ class InternetResearcher(BaseAgent):
         queries: List[str]
 
     @staticmethod
-    def action(state: TeamState):
+    def action(state: BehaviorResearchState):
         llm = InternetResearcher.LLM
         InternetResearcher.greetings()
         tavily = InternetResearcher.TAVILY
