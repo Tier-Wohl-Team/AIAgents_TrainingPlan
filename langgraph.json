@@ -3,8 +3,7 @@
     "./TrainingPlan_Team"
   ],
   "graphs": {
-    "team": "./TrainingPlan_Team/team.py:team",
-    "behavior_research_team": "./TrainingPlan_Team/teams/BehaviorResearchTeam.py:behavior_research_team"
+    "team": "./TrainingPlan_Team/team.py:team"
   },
   "env": "./TrainingPlan_Team/.env"
 }
