@@ -1,27 +1,41 @@
-import unittest
-from unittest.mock import patch
-from states.state_types import BehaviorResearchState
-from agents.BehaviorHandlerInteraction import BehaviorHandlerInteraction
+import json
 
+import pytest
+from unittest.mock import patch, MagicMock
+from agents.DogFeatureInteractionAgent import DogFeatureInteractionAgent
+from states.state_types import TeamState
 
-@patch.object(BehaviorHandlerInteraction, 'handler_input_method')
-def test_action(self, mock_input):
-    # Arrange
-    mock_input.side_effect = [
-        "The dog is calm during training.",
-        "Try extending the sit duration incrementally."
-    ]
+@pytest.mark.unit
+@patch('agents.DogFeatureInteractionAgent.DogFeatureInteractionAgent.LLM', autospec=True)  # Mock the LLM class
+def test_action_mock(mock_llm):
+    # Configure the mocked LLM to have an `invoke` method
+    fake_response_content = {
+        "questions": [
+            "Does your dog have any hip issues?",
+            "What type of treats does your dog prefer?"
+        ]
+    }
+    mock_llm.invoke.return_value.content = json.dumps(fake_response_content)
 
-    start_state = BehaviorResearchState(
-        question="My dog sits for 10 seconds. I want to extend this duration to 25 seconds.",
-        internet_research_results=["The dog is a canine."]
+    # Mock state
+    state = TeamState(
+        question="sit",
+        outline_plan="Step 1: Lure the dog into a sitting position\nStep 2: Reward the dog with a treat"
     )
 
-    # Act
-    result = BehaviorHandlerInteraction.action(start_state)
+    # Mock input() to avoid blocking user interaction
+    with patch("builtins.input", return_value="My dog loves chicken treats!"):
+        # Call the action method
+        response = DogFeatureInteractionAgent.action(state)
 
-    # Assert
-    self.assertEqual(len(result["handler_input"]), 2)
-    self.assertTrue(result["asked_human"])
-    self.assertEqual(result["handler_input"][0]["answer"], "The dog is calm during training.")
-    self.assertEqual(result["handler_input"][1]["answer"], "Try extending the sit duration incrementally.")
+    # Extract the result
+    dog_details = response.get("dog_details", [])
+    assert len(dog_details) > 0, "No questions were processed."
+
+    # Check that each detail entry has a query and answer
+    for detail in dog_details:
+        assert "query" in detail, f"Expected 'query' key in detail entry, got {detail}"
+        assert "answer" in detail, f"Expected 'answer' key in detail entry, got {detail}"
+
+    # Verify the mock LLM was called
+    mock_llm.invoke.assert_called_once()
