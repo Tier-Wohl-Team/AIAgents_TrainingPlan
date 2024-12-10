@@ -8,6 +8,7 @@ class TeamState(TypedDict):
     internet_research_results: List[str]
     handler_input: Annotated[List[tuple[str, str]], operator.add]
     outline_plan: str
+    dog_details: Annotated[List[tuple[str, str]], operator.add]
     plans: Annotated[List[tuple[str, str]], operator.add]
     final_plan: str
 
