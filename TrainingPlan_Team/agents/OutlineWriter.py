@@ -63,20 +63,24 @@ class OutlineWriter(BaseAgent):
         
         {internet_research_results}
         
-        Additional information on the goal from the handler of the animal:
+        Additional information on the goal from the dog handler:
         
         {handler_input}
         
         Based on the current status provided in the question, write a concise and minimalistic plan outline that 
         includes only the necessary steps to achieve the goal. Avoid unnecessary or irrelevant steps.
         
-        If you don't have enough information about how to train the goal of the client and want additional information 
-        from the internet, just answer with "I need more information".
-
-                """)
+        If no 'Additional information on the goal found in the internet' are given and you need more information about
+        to understand the behaviour and how to train it, answer with 'I need more information from the internet.'.
+        
+        Only in case there is no 'Additional information from the dog handler' you might get request
+        information from the dog handler. Use this mainly to get clear and measurable definitions of the current status 
+        and the goal. If you need this information, answer with:
+        'I need more information from the dog handler.'
+                        """)
         internet_research_results = state.get("internet_research_results", "")
         handler_input = state.get("handler_input", "")
-        formatted_dog_details = "\n".join([f"- {d[0]}: {d[1]}" for d in state["dog_details"]])
+        formatted_dog_details = "\n".join([f"- {d[0]}: {d[1]}" for d in state.get("dog_details", [])])
         messages = [
             SystemMessage(content=background_story),
             HumanMessage(content=task_prompt.format(
