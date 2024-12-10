@@ -11,7 +11,7 @@ from states.state_types import BehaviorResearchState
 
 class BehaviorResearchTeam:
     """A team of a behavior research specialist and a handler interaction specialist."""
-    MAX_ITERATIONS = 2
+    MAX_ITERATIONS = 1
 
     def __init__(self, name):
         self.name = name

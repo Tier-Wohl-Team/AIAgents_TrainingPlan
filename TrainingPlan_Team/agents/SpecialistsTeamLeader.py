@@ -96,6 +96,7 @@ class SpecialistsTeamLeader(BaseAgent):
         training = json.loads(distance_duration.content)
         for step in training["training_steps"]:
             print("Sending to: ", node_mapping.get(step["mode"], "other"))
+            print(step)
         return [Send(node_mapping.get(step["mode"], "other"), step)
                 for step in training["training_steps"]
                 ]
