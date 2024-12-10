@@ -55,6 +55,10 @@ class OutlineWriter(BaseAgent):
         
         {question}
         
+        Take into account the following information about the dog:
+        
+        {dog_details}
+        
         Additional information on the goal found in the internet:
         
         {internet_research_results}
@@ -72,10 +76,12 @@ class OutlineWriter(BaseAgent):
                 """)
         internet_research_results = state.get("internet_research_results", "")
         handler_input = state.get("handler_input", "")
+        formatted_dog_details = "\n".join([f"- {d[0]}: {d[1]}" for d in state["dog_details"]])
         messages = [
             SystemMessage(content=background_story),
             HumanMessage(content=task_prompt.format(
                 question=state["question"],
+                dog_details=formatted_dog_details,
                 internet_research_results=internet_research_results,
                 handler_input=handler_input,
             ))

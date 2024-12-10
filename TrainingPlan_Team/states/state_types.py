@@ -31,4 +31,7 @@ class BehaviorResearchState(TypedDict):
     handler_input: Annotated[List[tuple[str, str]], operator.add]
     asked_human: bool
     outline_plan: str
-    wrote_plan: bool
+    dog_details: Annotated[List[tuple[str, str]], operator.add]
+    new_dog_details: Annotated[List[tuple[str, str]], operator.add]
+    iteration_count: int
+    is_finished: bool

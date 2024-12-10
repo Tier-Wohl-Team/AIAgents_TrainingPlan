@@ -3,12 +3,15 @@ from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 
 from agents.BehaviorHandlerInteraction import BehaviorHandlerInteraction
+from agents.DogFeatureInteractionAgent import DogFeatureInteractionAgent
 from agents.InternetResearcher import InternetResearcher
+from agents.OutlinePlanEvaluator import OutlinePlanEvaluator
 from agents.OutlineWriter import OutlineWriter
 from states.state_types import BehaviorResearchState
 
 class BehaviorResearchTeam:
     """A team of a behavior research specialist and a handler interaction specialist."""
+    MAX_ITERATIONS = 2
 
     def __init__(self, name):
         self.name = name
@@ -16,37 +19,45 @@ class BehaviorResearchTeam:
 
     @staticmethod
     def _create_team_graph():
-        def should_continue(state):
+        def should_get_more_infos(state):
             if state.get("outline_plan", "") == "I need more information.":
                 if not "internet_research_results" in state:
                     return InternetResearcher.NAME
                 elif not "asked_human" in state:
                     return BehaviorHandlerInteraction.NAME
                 else:
-                    return "collector"
+                    return END
             else:
-                return "collector"
+                return DogFeatureInteractionAgent.NAME
 
-        def collector(state):
-            print("in collector")
-            print(state)
-            return {"wrote_plan": state["outline_plan"] != "I need more information."}
+        def should_rewrite(state):
+            if (state.get("is_finished", True) or
+                    state.get("iteration_count", 0) >= BehaviorResearchTeam.MAX_ITERATIONS):
+                return END
+            else:
+                return OutlineWriter.NAME
 
         # %% build the graph
         behavior_research_team_builder = StateGraph(BehaviorResearchState)
         behavior_research_team_builder.add_node(OutlineWriter.NAME, OutlineWriter.action)
         behavior_research_team_builder.add_node(InternetResearcher.NAME, InternetResearcher.action)
         behavior_research_team_builder.add_node(BehaviorHandlerInteraction.NAME, BehaviorHandlerInteraction.action)
-        behavior_research_team_builder.add_node("collector", collector)
+        behavior_research_team_builder.add_node(DogFeatureInteractionAgent.NAME, DogFeatureInteractionAgent.action)
+        behavior_research_team_builder.add_node(OutlinePlanEvaluator.NAME, OutlinePlanEvaluator.action)
         behavior_research_team_builder.add_edge(START, OutlineWriter.NAME)
         behavior_research_team_builder.add_conditional_edges(
             OutlineWriter.NAME,
-            should_continue,
-            [InternetResearcher.NAME, BehaviorHandlerInteraction.NAME, "collector"]
+            should_get_more_infos,
+            [InternetResearcher.NAME, BehaviorHandlerInteraction.NAME, DogFeatureInteractionAgent.NAME]
         )
         behavior_research_team_builder.add_edge(InternetResearcher.NAME, OutlineWriter.NAME)
         behavior_research_team_builder.add_edge(BehaviorHandlerInteraction.NAME, OutlineWriter.NAME)
-        behavior_research_team_builder.add_edge("collector", END)
+        behavior_research_team_builder.add_edge(DogFeatureInteractionAgent.NAME, OutlinePlanEvaluator.NAME)
+        behavior_research_team_builder.add_conditional_edges(
+            OutlinePlanEvaluator.NAME,
+            should_rewrite,
+            [OutlineWriter.NAME, END]
+        )
 
         behavior_research_team = behavior_research_team_builder.compile()
         return behavior_research_team

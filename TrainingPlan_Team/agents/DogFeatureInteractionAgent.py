@@ -7,7 +7,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_openai import ChatOpenAI
 
 from agents.BaseAgent import BaseAgent
-from states.state_types import TeamState
+from states.state_types import BehaviorResearchState
 
 dotenv.load_dotenv("../.env")
 
@@ -25,7 +25,7 @@ class DogFeatureInteractionAgent(BaseAgent):
         return answer
 
     @staticmethod
-    def action(state: TeamState):
+    def action(state: BehaviorResearchState):
         # llm = DogFeatureInteractionAgent.LLM.bind_tools([DogFeatureInteractionAgent.handler_input])
         llm = DogFeatureInteractionAgent.LLM
         DogFeatureInteractionAgent.greetings()
@@ -41,10 +41,14 @@ class DogFeatureInteractionAgent(BaseAgent):
             Your team is working on a training plan to teach the behavior {behavior} to dog. Your team
             members have already drafted an initial outline of a training plan. Assess the feasibility of the provided 
             dog training plan, considering the health and breed-specific needs of the dog.
-
         
             PLAN_OUTLINE: 
             {plan_outline}
+            
+            We already have additional information about the dog from the dog handler. Take into account the following 
+            information about the dog. Do not ask the same questions again.
+            
+            {dog_details}
             
             Analyze the provided training plan for teaching the dog the specified behavior. Consider whether any part 
             of the plan might be influenced by the dog's health, age breed or training preferences. If health or breed 
@@ -74,11 +78,13 @@ class DogFeatureInteractionAgent(BaseAgent):
             Return a JSON with the single key "questions" and the value is the list of all questions you have to
             the dog handler.
         """)
+        formatted_dog_details = "\n".join([f"- {d[0]}: {d[1]}" for d in state["dog_details"]])
         messages = [
             SystemMessage(content=background_story),
             HumanMessage(content=task_prompt.format(
                 behavior=state["question"],
                 plan_outline=state["outline_plan"],
+                dog_details=formatted_dog_details,
             ))
         ]
         response = llm.invoke(messages)
@@ -87,5 +93,6 @@ class DogFeatureInteractionAgent(BaseAgent):
         questions_json = json.loads(response.content)
         for question in questions_json["questions"]:
             answer = DogFeatureInteractionAgent.handler_input(question)
-            handler_information.append({"query": question, "answer": answer})
-        return {"dog_details": handler_information}
+            handler_information.append((question, answer))
+
+        return {"new_dog_details": handler_information}
