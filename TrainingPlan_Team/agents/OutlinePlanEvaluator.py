@@ -43,6 +43,7 @@ class OutlinePlanEvaluator(BaseAgent):
             ))
         ]
         response = llm.invoke(messages)
+        print("OutlinePlanEvaluator response: ", response.content)
         updated_details = state["dog_details"] + state["new_dog_details"]
         return {"is_finished": response.content == "no_rewrite", "iteration_count": state.get("iteration_count",0) + 1,
                 "dog_details": updated_details, "new_dog_details": []}

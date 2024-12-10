@@ -26,7 +26,6 @@ def test_action_dog_handler_information():
         question=question,
     )
     response = OutlineWriter.action(state)
-    print(response["outline_plan"])
     assert response["outline_plan"] == "I need more information from the dog handler."
 
 @pytest.mark.integration
@@ -36,5 +35,4 @@ def test_action_internet_information():
         question=question,
     )
     response = OutlineWriter.action(state)
-    print(response["outline_plan"])
     assert response["outline_plan"] == "I need more information from the internet."

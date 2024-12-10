@@ -45,14 +45,16 @@ class BehaviorHandlerInteraction(BaseAgent):
             
             Even with these results, the team is still unsure how to teach the behavior to the animal. Your task is to
             get additional information about the behavior from the handler of the animal. The handler is a person who 
-            is familiar with the behavior and is able to provide additional information about the behavior. 
+            is familiar with the behavior and is able to provide additional information about the behavior. Make sure
+            that we have a defined and measurable status of the behavior and a defined and measurable goal. Without
+            this information, we cannot train the behavior.
         """)
 
         messages = [
             SystemMessage(content=background_story),
             HumanMessage(content=task_prompt.format(
                 behavior=state["question"],
-                internet_research_results="\n\n".join(state["internet_research_results"])
+                internet_research_results="\n\n".join(state.get("internet_research_results", []))
             ))
         ]
         response = llm.invoke(messages)

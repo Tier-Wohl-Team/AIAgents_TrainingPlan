@@ -11,7 +11,7 @@ from states.state_types import BehaviorResearchState
 
 class BehaviorResearchTeam:
     """A team of a behavior research specialist and a handler interaction specialist."""
-    MAX_ITERATIONS = 1
+    MAX_ITERATIONS = 2
 
     def __init__(self, name):
         self.name = name
@@ -19,16 +19,13 @@ class BehaviorResearchTeam:
 
     @staticmethod
     def _create_team_graph():
+
         def should_get_more_infos(state):
-            if state.get("outline_plan", "") == "I need more information.":
-                if not "internet_research_results" in state:
-                    return InternetResearcher.NAME
-                elif not "asked_human" in state:
-                    return BehaviorHandlerInteraction.NAME
-                else:
-                    return END
-            else:
-                return DogFeatureInteractionAgent.NAME
+            if state.get("outline_plan", "") == "I need more information from the internet.":
+                return InternetResearcher.NAME
+            if state.get("outline_plan", "") == "I need more information from the dog handler.":
+                return BehaviorHandlerInteraction.NAME
+            return DogFeatureInteractionAgent.NAME
 
         def should_rewrite(state):
             if (state.get("is_finished", True) or
