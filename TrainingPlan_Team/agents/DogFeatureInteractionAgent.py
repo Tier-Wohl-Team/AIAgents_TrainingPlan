@@ -1,4 +1,5 @@
 # %% imports
+import json
 import textwrap
 
 import dotenv
@@ -14,40 +15,64 @@ dotenv.load_dotenv("../.env")
 class DogFeatureInteractionAgent(BaseAgent):
     NAME = "DogFeatureInteractionAgent"
     LLM_MODEL = "gpt-4o-mini"
-    LLM = (ChatOpenAI(model_name=LLM_MODEL, temperature=0.0))
+    LLM = ChatOpenAI(model_name=LLM_MODEL, temperature=0.0,
+                     model_kwargs={"response_format": {"type": "json_object"}})
 
     @staticmethod
     def handler_input(query: str):
-        """
-        Ask the handler of the animal for additional information about the his dog.
-        The input should be a question for the human.
-        """
         print(f"{query}")
         answer = input("Your answer: ")
         return answer
 
     @staticmethod
     def action(state: TeamState):
-        llm = DogFeatureInteractionAgent.LLM.bind_tools([DogFeatureInteractionAgent.handler_input])
+        # llm = DogFeatureInteractionAgent.LLM.bind_tools([DogFeatureInteractionAgent.handler_input])
+        llm = DogFeatureInteractionAgent.LLM
         DogFeatureInteractionAgent.greetings()
 
         background_story = textwrap.dedent("""
-            You are an experienced animal trainer with a deep understanding of animal behavior and training techniques.
-            What sets you apart is your ability to communicate with the handler of the animal to gather additional information
-            about the behavior. Your clients love your patience and you politeness in your communication.
+    You are a highly knowledgeable canine behaviorist with expertise in training techniques, breed characteristics, and canine health.
+    Your primary objective is to ensure that the training plan is safe and effective for the specific dog in question. 
+    Your secondary objective is to retrieve additional information to tune the training plan for the dog's specific preferences
+    You are particularly skilled at identifying potential breed-related constraints and health considerations.
         """)
 
         task_prompt = textwrap.dedent("""
             Your team is working on a training plan to teach the behavior {behavior} to dog. Your team
-            members have already drafted an initial outline of a training plan 
+            members have already drafted an initial outline of a training plan. Assess the feasibility of the provided 
+            dog training plan, considering the health and breed-specific needs of the dog.
+
         
             PLAN_OUTLINE: 
             {plan_outline}
             
-            Please go over the plan and check whether there are specific challenges for the dog in the plan. Take 
-            into account any aspects which might be affected by the breed, age, health, size, temperament, 
-            training history. Then ask the handler about these details of his dog. The handler is a person who
-            intimately knows the dog and is able to provide additional information the dog.
+            Analyze the provided training plan for teaching the dog the specified behavior. Consider whether any part 
+            of the plan might be influenced by the dog's health, age breed or training preferences. If health or breed 
+            constraints are relevant, interact with the dog handler to gather additional information. If the plan
+            includes rewarding the dog, ask the handler for reward preferences of his dog.
+            Only ask questions directly
+            related to the behavior and the training plan's suitability.
+            
+            Here are some examples:
+            - If the behaviour is sit, you realize that this involves the hips. Many dogs, especially of larger breeds,
+              might have problems with sitting due to their hip joints. You ask the handler about the dog's hip joints
+              and if they are prone to hip dysplasia.
+            - If the behaviour is fetch, you realize that this involves the neck. Many dogs, especially of smaller breeds,
+              might have problems with fetching due to their neck joints. You ask the handler about the dog's neck joints
+              and if they are prone to neck dysplasia.
+            - if the behaviour includes physical exercise, you realize that this might involve panting. Many dogs,
+              especially of brachycephalic breeds, might have problems with panting due to their respiratory system.
+              You ask the handler about the dog's respiratory system and if they are prone to respiratory issues.
+            - You should also consider the feasibility of the plan. For example, if the plan involves a lot of jumping,
+              you might want to ask the handler about the dog's jumping ability and if it is suitable for the behavior.
+            - If the training plan includes rewarding the dog, you realize that rewarding is very dog specific. You ask
+              the handler about reward preferences of his dog.
+              
+            Remember to ask the handler about the specifics of the plan and not just the general behavior. The handler
+            is a person who intimately knows the dog and is able to provide additional information the dog.
+            
+            Return a JSON with the single key "questions" and the value is the list of all questions you have to
+            the dog handler.
         """)
         messages = [
             SystemMessage(content=background_story),
@@ -59,9 +84,8 @@ class DogFeatureInteractionAgent(BaseAgent):
         response = llm.invoke(messages)
         print("Please answer the following question to help us tune the training plan for you and your dog!")
         handler_information = []
-        for tool_call in response.tool_calls:
-            if tool_call["name"] == "handler_input":
-                query = tool_call["args"]["query"]
-                answer = DogFeatureInteractionAgent.handler_input(query)
-                handler_information.append({"query": query, "answer": answer})
+        questions_json = json.loads(response.content)
+        for question in questions_json["questions"]:
+            answer = DogFeatureInteractionAgent.handler_input(question)
+            handler_information.append({"query": question, "answer": answer})
         return {"dog_details": handler_information}
