@@ -36,19 +36,36 @@ class CueSpecialist(BaseAgent):
                 the cue is given BEFORE the behavior is initiated.
             """)
         task_prompt = textwrap.dedent("""
-                Please write a training plan to put the behaviour {behavior} under cue control. 
-                
-                The current status is
-                
-                {status} 
-                
-                The goal is to reach the following status:
+            Please write a training plan to put the behaviour {behavior} under cue control. 
             
-                {goal}
+            CURRENT STATUS
+            
+            {status} 
+            
+            GOAL
+        
+            {goal}
+            
+            INFORMATION ABOUT THE DOG:
+            
+            {dog_details}
                 
-                In your training plan, start by stating the current status and then the goal. Next, develop a 
-                detailed progression plan for the novice trainer. Clearly state what the novice trainer should do
-                and how he should react when the dog is not performing as expected. 
+            In your training plan, start by stating the current status and then the goal. Next, develop a 
+            detailed progression plan for the novice trainer. Clearly state what the novice trainer should do
+            and how he should react when the dog is not performing as expected. Finally, add any special considerations about
+            the dog to personalize the training plan.
+                
+            If there is already a previous version of the plan, you can use it as a reference, but take into account
+            the review from the welfare specialist if present.
+            
+            PREVIOUS VERSION
+            
+            {draft_plan}
+            
+            WELFARE REVIEW
+            
+            {welfare_review}
+            
             """)
         messages = [
             SystemMessage(content=background_story),
@@ -56,6 +73,9 @@ class CueSpecialist(BaseAgent):
                 behavior=state["behavior"],
                 status=state["status"],
                 goal=state["goal"],
+                dog_details=state.get("dog_details", ""),
+                draft_plan=state.get("draft_plan", ""),
+                welfare_review=state.get("welfare_review", "")
             ))
         ]
         response = llm.invoke(messages)

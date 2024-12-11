@@ -103,7 +103,7 @@ class DistanceDurationSpecialist(BaseAgent):
             SystemMessage(content=background_story),
             HumanMessage(content=task_prompt.format(
                 behavior=state["behavior"],
-                dog_details=state["dog_details"],
+                dog_details=state.get("dog_details", ""),
                 mode=state["mode"],
                 status=state["status"],
                 goal=state["goal"],
