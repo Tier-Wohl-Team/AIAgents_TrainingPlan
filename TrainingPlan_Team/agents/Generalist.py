@@ -30,19 +30,38 @@ class Generalist(BaseAgent):
         """)
         task_prompt = textwrap.dedent("""
             Please write a training plan for the behaviour {behavior}. 
+                        
+            CURRENT STATUS
             
-            the current status is
+            {status} 
             
-            {status}
-            
-            The goal is to reach the following status:
-            
+            GOAL
+        
             {goal}
+            
+            INFORMATION ABOUT THE DOG:
+            
+            {dog_details}
+
             
             In your training plan, start by stating the current status and then the goal. Next, develop a 
             detailed progression plan for the novice trainer. Clearly state what the novice trainer should do
             and how he should react when the dog is not performing as expected. Focus only on how to get from the
-            current status to the goal. Do not add any additional training information.
+            current status to the goal. When choosing your training steps, consider the information about the dog 
+            (if given).
+            
+            If there is already a previous version of the plan, you can use it as a reference, but take into account
+            the review from the welfare specialist if present.
+            
+            PREVIOUS VERSION
+            
+            {draft_plan}
+            
+            WELFARE REVIEW
+            
+            {welfare_review}
+            
+
         """)
 
         messages = [
