@@ -70,6 +70,9 @@ class Generalist(BaseAgent):
                 behavior=state["behavior"],
                 status=state["status"],
                 goal=state["goal"],
+                dog_details=state.get("dog_details", ""),
+                draft_plan=state.get("draft_plan", ""),
+                welfare_review=state.get("welfare_review", "")
             ))
         ]
         response = llm.invoke(messages)
