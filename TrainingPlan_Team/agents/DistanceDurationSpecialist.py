@@ -50,6 +50,14 @@ class DistanceDurationSpecialist(BaseAgent):
             INFORMATION ABOUT THE DOG:
             
             {dog_details}
+            
+            PREVIOUS VERSION OF THE PLAN:
+            
+            {draft_plan}
+            
+            WELFARE REVIEW:
+            
+            {welfare_review}
     
             Please write a human readable text from for these training steps. Start by stating the current status and the 
             final goal. Then list ALL training progressions including all repetitions exactly as the are given in the 
@@ -83,6 +91,10 @@ class DistanceDurationSpecialist(BaseAgent):
             **Considerations**
             - As your dog likes to work for treats, use these as reinforcements. This allows you to keep a rate
               of repetitions high.
+              
+            END EXAMPLE
+            If there is already a previous version of the plan, you can use it as a reference, but take into account
+            the review from the welfare specialist if present.
             """)
         training_steps = "\n\n".join([f"{step}: {variation}" for training_step in
                                      training_steps for step, variation in training_step.items()])
@@ -95,9 +107,12 @@ class DistanceDurationSpecialist(BaseAgent):
                 mode=state["mode"],
                 status=state["status"],
                 goal=state["goal"],
-                training_steps=training_steps
+                training_steps=training_steps,
+                draft_plan=state.get("draft_plan", ""),
+                welfare_review=state.get("welfare_review", "")
             ))
         ]
+        print(messages)
         response = llm.invoke(messages)
         return {"draft_plan": response.content}
 
