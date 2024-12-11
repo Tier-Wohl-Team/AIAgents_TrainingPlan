@@ -38,19 +38,37 @@ class DistractionSpecialist(BaseAgent):
             The dog already knows the behaviour and can perform it. Only look at the distractions and leave other 
             elements to the other members of your team. 
             
-            The dog can already show the behavior under the following distractions:
+            CURRENT STATUS
             
-            {status}
+            {status} 
             
-            The goal is to reach the following status:
-            
+            GOAL
+        
             {goal}
+            
+            INFORMATION ABOUT THE DOG:
+            
+            {dog_details}            
             
             In your training plan, start by stating the current status and then the goal. Next, develop a 
             detailed progression plan for the trainer. In your 
             progression plan, start from easy to hard. Clearly state the distraction and explain what the challenge is 
-            in this setup. Also add the information how the trainer should react in case the distraction is too strong 
+            in this setup. When choosing distractions, take into account the information about the dog (if they are given)
+            Also add the information how the trainer should react in case the distraction is too strong 
             and the dog breaks the behaviour.
+            
+            If there is already a previous version of the plan, you can use it as a reference, but take into account
+            the review from the welfare specialist if present.
+            
+            PREVIOUS VERSION
+            
+            {draft_plan}
+            
+            WELFARE REVIEW
+            
+            {welfare_review}
+            
+ 
         """)
 
         messages = [
@@ -59,6 +77,9 @@ class DistractionSpecialist(BaseAgent):
                 behavior=state["behavior"],
                 status=state["status"],
                 goal=state["goal"],
+                dog_details=state.get("dog_details", ""),
+                draft_plan=state.get("draft_plan", ""),
+                welfare_review=state.get("welfare_review", "")
             ))
         ]
         response = llm.invoke(messages)
