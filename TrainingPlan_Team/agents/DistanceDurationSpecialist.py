@@ -46,20 +46,56 @@ class DistanceDurationSpecialist(BaseAgent):
             followed by a list of variations to reach this target:
     
             {training_steps}
+            
+            INFORMATION ABOUT THE DOG:
+            
+            {dog_details}
     
             Please write a human readable text from for these training steps. Start by stating the current status and the 
-            final goal. For the variations, format them as list. Only write about these specific steps, do not add any 
-            additional training information.
+            final goal. Then list ALL training progressions including all repetitions exactly as the are given in the 
+            list of variations. .
+            The goal is to give the trainer a step by step training plan. Also give information on how the trainer 
+            should react if the dog fails to perform a training step. Finally, add any special considerations about
+            the dog to personalize the training plan. Here is an example for the training steps:
+            
+            5.0: [2, 6, 3, 7]
+            10.0: [5, 15, 10, 20]
+            
+            **Current Status:** The dog has successfully learned to perform the 'sit' command at a distance of 1.0 meters. 
+
+            **Final Goal:** The objective is to extend the distance of the 'sit' command to 2.0 meters.
+
+            **Training Progressions:**
+
+            1. ** 5 meters:**
+                - Start with 2 meters.
+                - Repeat with 6 meters.
+                - 3 meters
+                - 7 meters
+            2. ** 10 meters:**
+                - Start with 5 meters.
+                - Repeat with 15 meters.
+                - 10 meters
+                - 20 meters
+                If the dog fails at any distance, repeat this step. If he fails again, go to the next step. If he
+                fails at more than 3 distances, go back to the previous progression.
+
+            **Considerations**
+            - As your dog likes to work for treats, use these as reinforcements. This allows you to keep a rate
+              of repetitions high.
             """)
+        training_steps = "\n\n".join([f"{step}: {variation}" for training_step in
+                                     training_steps for step, variation in training_step.items()])
+        print(training_steps)
         messages = [
             SystemMessage(content=background_story),
             HumanMessage(content=task_prompt.format(
                 behavior=state["behavior"],
+                dog_details=state["dog_details"],
                 mode=state["mode"],
                 status=state["status"],
                 goal=state["goal"],
-                training_steps="\n\n".join([f"{step}: {variation}" for training_step in
-                                            training_steps for step, variation in training_step.items()])
+                training_steps=training_steps
             ))
         ]
         response = llm.invoke(messages)

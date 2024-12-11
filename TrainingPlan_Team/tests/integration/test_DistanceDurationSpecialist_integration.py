@@ -15,9 +15,10 @@ def test_distance_duration_specialist_integration():
             "distances": {"1.0": [1.0, 1.3], "2.0": [2.0, 2.5]},
         }
     }
-
+    dog_details = [("What is the preferred reinforcement?", "My dog loves to work for treats."),
+                   ("What types of treats does the dog like?", "Kibble is fine.")]
     # Define a sample state
-    state = BehaviorState(mode="distance", goal=2.0, status=1.0, behavior="sit")
+    state = BehaviorState(mode="distance", goal=2.0, status=1.0, behavior="sit", dog_details=dog_details)
 
     # Call the action method
     response = DistanceDurationSpecialist.action(state)

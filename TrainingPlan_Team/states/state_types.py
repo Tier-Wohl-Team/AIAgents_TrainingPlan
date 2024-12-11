@@ -16,6 +16,7 @@ class TeamState(TypedDict):
 class BehaviorState(TypedDict):
     task: str
     behavior: str
+    dog_details: Annotated[List[tuple[str, str]], operator.add]
     mode: str
     status: float
     goal: float

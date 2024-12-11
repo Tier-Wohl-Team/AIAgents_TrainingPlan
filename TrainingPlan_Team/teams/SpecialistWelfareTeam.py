@@ -23,12 +23,13 @@ class SpecialistWelfareTeam:
                 state["is_finished"] = True
                 state["plans"] = [(state["task"], state["draft_plan"])]
                 return "collect_plan"
-            elif state.get("iteration_count", 0) >= max_welfare_iterations:
+
+            if state.get("iteration_count", 0) >= max_welfare_iterations:
                 state["plans"] = [(state["task"], "No Plan")]
                 return "collect_plan"
-            else:
-                state["iteration_count"] = state.get("iteration_count", 0) + 1
-                return specialist_agent.NAME
+
+            state["iteration_count"] = state.get("iteration_count", 0) + 1
+            return specialist_agent.NAME
 
         def collect_plan(state):
             return {"plans": [(state["task"], state["draft_plan"])]}
