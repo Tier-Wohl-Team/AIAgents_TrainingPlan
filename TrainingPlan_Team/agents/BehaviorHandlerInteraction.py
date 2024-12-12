@@ -38,10 +38,15 @@ class BehaviorHandlerInteraction(BaseAgent):
         """)
 
         task_prompt = textwrap.dedent("""
-            Your team is working on a training plan to teach the behavior {behavior} to an animal. The team has already
-            performed an internet research on the behavior and has gathered the following information:
+            Your team is working on a training plan to teach the behavior {behavior} to an animal. The team might have 
+            already performed an internet research on the behavior and has gathered the following information:
             
             {internet_research_results}
+            
+            Additionally, there might be further information about the goal and the current status of the behavior from
+            the dog handler:
+            
+            {handler_input}
             
             Even with these results, the team is still unsure how to teach the behavior to the animal. Your task is to
             get additional information about the behavior from the handler of the animal. The handler is a person who 
@@ -54,8 +59,9 @@ class BehaviorHandlerInteraction(BaseAgent):
             SystemMessage(content=background_story),
             HumanMessage(content=task_prompt.format(
                 behavior=state["question"],
-                internet_research_results="\n\n".join(state.get("internet_research_results", []))
-            ))
+                internet_research_results="\n\n".join(state.get("internet_research_results", [])),
+                handler_input = state.get("handler_input", "None")
+        ))
         ]
         response = llm.invoke(messages)
 

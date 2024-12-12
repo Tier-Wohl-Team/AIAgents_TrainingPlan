@@ -51,33 +51,37 @@ class OutlineWriter(BaseAgent):
     
         """)
         task_prompt = textwrap.dedent("""
-        Here is the goal of our client:
+        DATA SECTION:
+        
+        GOAL:
         
         {question}
         
-        Take into account the following information about the dog:
+        DOG INFORMATION:
         
         {dog_details}
         
-        Additional information on the goal found in the internet:
+        INTERNET INFORMATION:
         
         {internet_research_results}
         
-        Additional information on the goal from the dog handler:
+        ADDITIONAL INFORMATION FROM THE DOG HANDLER:
         
         {handler_input}
         
+        END OF DATA SECTION
+        
         Based on the current status provided in the question, write a concise and minimalistic plan outline that 
-        includes only the necessary steps to achieve the goal. Avoid unnecessary or irrelevant steps.
+        includes only the necessary steps to achieve the GOAL. Avoid unnecessary or irrelevant steps.
+            
+        If INTERNET INFORMATION is not given and you need more information about the behaviour and how to train 
+        it, answer with 'I need more information from the internet.'.
         
-        If no 'Additional information on the goal found in the internet' are given and you need more information about
-        to understand the behaviour and how to train it, answer with 'I need more information from the internet.'.
-        
-        Only in case there is no 'Additional information from the dog handler' you might get request
-        information from the dog handler. Use this mainly to get clear and measurable definitions of the current status 
-        and the goal. If you need this information, answer with:
-        'I need more information from the dog handler.'
+        Only If the ADDITIONAL INFORMATION FROM THE DOG HANDLER section is empty, you can ask the dog handler. Use this
+        in case the status and the goal is not defined with measurable parameters.In this case, answer with:
+        'I need more information from the dog handler.' 
                         """)
+
         internet_research_results = state.get("internet_research_results", "")
         handler_input = state.get("handler_input", "")
         formatted_dog_details = "\n".join([f"- {d[0]}: {d[1]}" for d in state.get("dog_details", [])])
