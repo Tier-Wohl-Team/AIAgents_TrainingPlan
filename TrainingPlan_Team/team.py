@@ -31,7 +31,7 @@ SpecialistsTeamLeader.task_team_mapping({
     "duration": distance_duration_team.name,
     "distance": distance_duration_team.name,
     "cue introduction": cue_team.name,
-    "distraction": distraction_team.name,
+    "distractions": distraction_team.name,
     "other": generalist_team.name,
 })
 
