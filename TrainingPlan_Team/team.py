@@ -1,8 +1,6 @@
 # %% settings
 import sys
 import os
-
-
 sys.path.append(os.path.abspath("./TrainingPlan_Team"))  # Adjust the path as needed
 
 from langgraph.constants import START, END
@@ -18,6 +16,7 @@ from agents.CueSpecialist import CueSpecialist
 from agents.DistractionSpecialist import DistractionSpecialist
 from agents.Generalist import Generalist
 from agents.FinalPlanWriter import FinalPlanWriter
+from agents.PlanFiler import PlanFiler
 
 
 # %% Build mini teams
@@ -44,6 +43,7 @@ team_graph_builder.add_node(cue_team.name, cue_team.graph)
 team_graph_builder.add_node(distraction_team.name, distraction_team.graph)
 team_graph_builder.add_node(generalist_team.name, generalist_team.graph)
 team_graph_builder.add_node(FinalPlanWriter.NAME, FinalPlanWriter.action)
+team_graph_builder.add_node(PlanFiler.NAME, PlanFiler.action)
 team_graph_builder.add_edge(START, behavior_research_team.name)
 team_graph_builder.add_conditional_edges(behavior_research_team.name, SpecialistsTeamLeader.action,
                                     [distance_duration_team.name, cue_team.name, distraction_team.name, generalist_team.name])
@@ -51,7 +51,9 @@ team_graph_builder.add_edge(distance_duration_team.name, FinalPlanWriter.NAME)
 team_graph_builder.add_edge(cue_team.name, FinalPlanWriter.NAME)
 team_graph_builder.add_edge(distraction_team.name, FinalPlanWriter.NAME)
 team_graph_builder.add_edge(generalist_team.name, FinalPlanWriter.NAME)
-team_graph_builder.add_edge(FinalPlanWriter.NAME, END)
+team_graph_builder.add_edge(FinalPlanWriter.NAME, PlanFiler.NAME)
+team_graph_builder.add_edge(PlanFiler.NAME, END)
+
 # %% compile the team graph
 memory = MemorySaver()
 
