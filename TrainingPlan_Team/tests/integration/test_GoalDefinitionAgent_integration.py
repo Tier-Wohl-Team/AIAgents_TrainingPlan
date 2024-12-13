@@ -11,7 +11,7 @@ def test_action_integration():
     response = GoalDefinitionAgent.action(state)
     print(response["goal"])
     assert response["goal"]["current_status"] != "Not defined"
-    assert response["goal"]["target_goal"] == "Not defined"
+    assert response["goal"]["target_goal"] != "Not defined"
 
 @pytest.mark.integration
 def test_action_current_status_not_defined():
@@ -33,9 +33,9 @@ def test_action_target_goal_not_defined():
     response = GoalDefinitionAgent.action(state)
     print(response["goal"])
     assert response["goal"]["current_status"] != "Not defined"
-    assert (response["goal"]["target_goal"] == "Not defined"
+    assert response["goal"]["target_goal"] == "Not defined"
 
-@pytest.mark.integration)
+@pytest.mark.integration
 def test_action_target_goal_both_not_defined():
     question = "My dog should sit for longer."
     state = TeamState(
@@ -44,4 +44,15 @@ def test_action_target_goal_both_not_defined():
     response = GoalDefinitionAgent.action(state)
     print(response["goal"])
     assert response["goal"]["current_status"] == "Not defined"
+    assert response["goal"]["target_goal"] == "Not defined"
+
+@pytest.mark.integration
+def test_action_target_goal_distraction():
+    question = "My dog can sit when I throw a ball. Can we improve on this?"
+    state = TeamState(
+        question=question,
+    )
+    response = GoalDefinitionAgent.action(state)
+    print(response["goal"])
+    assert response["goal"]["current_status"] != "Not defined"
     assert response["goal"]["target_goal"] == "Not defined"
