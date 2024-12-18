@@ -1,12 +1,16 @@
 # %% settings
 import sys
 import os
+import dotenv
+dotenv.load_dotenv("./.env")
+dotenv.load_dotenv("./TrainingPlan_Team/.env")
 sys.path.append(os.path.abspath("./TrainingPlan_Team"))  # Adjust the path as needed
 
 from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 from langgraph.checkpoint.memory import MemorySaver
 
+from teams.ClientInteractionTeam import ClientInteractionTeam
 from teams.SpecialistWelfareTeam import SpecialistWelfareTeam
 from teams.BehaviorResearchTeam import BehaviorResearchTeam
 from states.state_types import TeamState
@@ -20,6 +24,7 @@ from agents.PlanFiler import PlanFiler
 
 
 # %% Build mini teams
+client_interaction_team = ClientInteractionTeam(name="Client Interaction Team")
 behavior_research_team = BehaviorResearchTeam(name="Behavior Research Team")
 
 distance_duration_team = SpecialistWelfareTeam(name="Distance Duration Team", specialist_agent=DistanceDurationSpecialist)
@@ -36,7 +41,9 @@ SpecialistsTeamLeader.task_team_mapping({
 })
 
 # %% build the team graph
+# Nodes
 team_graph_builder = StateGraph(TeamState)
+team_graph_builder.add_node(client_interaction_team.name, client_interaction_team.graph)
 team_graph_builder.add_node(behavior_research_team.name, behavior_research_team.graph)
 team_graph_builder.add_node(distance_duration_team.name, distance_duration_team.graph)
 team_graph_builder.add_node(cue_team.name, cue_team.graph)
@@ -44,7 +51,10 @@ team_graph_builder.add_node(distraction_team.name, distraction_team.graph)
 team_graph_builder.add_node(generalist_team.name, generalist_team.graph)
 team_graph_builder.add_node(FinalPlanWriter.NAME, FinalPlanWriter.action)
 team_graph_builder.add_node(PlanFiler.NAME, PlanFiler.action)
-team_graph_builder.add_edge(START, behavior_research_team.name)
+
+# Edges
+team_graph_builder.add_edge(START, client_interaction_team.name)
+team_graph_builder.add_edge(client_interaction_team.name, behavior_research_team.name)
 team_graph_builder.add_conditional_edges(behavior_research_team.name, SpecialistsTeamLeader.action,
                                     [distance_duration_team.name, cue_team.name, distraction_team.name, generalist_team.name])
 team_graph_builder.add_edge(distance_duration_team.name, FinalPlanWriter.NAME)
@@ -59,12 +69,12 @@ memory = MemorySaver()
 
 team = team_graph_builder.compile(checkpointer=memory)
 
-# # %% test graph
+# %% test graph
 # config = {"configurable": {"thread_id": "1"}}
 # question = "My dog sits on cue for 10 seconds. I want to extend this duration to 25 seconds."
-# for s in team.stream({"question": question}, config=config):
+# for s in team.stream({"question": ""}, config=config):
 #     print(s)
-# # %%
+# %%
 # bla = team.get_state(config=config)
 # print(bla)
 #

@@ -1,6 +1,7 @@
 # %% define the state
 import operator
 from typing import TypedDict, List, Annotated
+from langgraph.graph import add_messages
 
 
 class TeamState(TypedDict):
@@ -11,6 +12,11 @@ class TeamState(TypedDict):
     dog_details: Annotated[List[tuple[str, str]], operator.add]
     plans: Annotated[List[tuple[str, str]], operator.add]
     final_plan: str
+
+
+class ClientInteractionState(TypedDict):
+    messages: Annotated[list, add_messages]
+    question: str
 
 
 class BehaviorState(TypedDict):
