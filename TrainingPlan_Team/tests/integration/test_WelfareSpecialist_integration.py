@@ -9,7 +9,8 @@ def test_welfare_specialist_integration_leash_correction():
     # Define the input state with a training plan using leash correction
     state = BehaviorState(
         behavior="sit",
-        draft_plan="Step 1: Use a leash correction to enforce the sit position."
+        draft_plan="Step 1: Use a leash correction to enforce the sit position.",
+        dog_details=""
     )
 
     # Call the action method
@@ -28,7 +29,8 @@ def test_welfare_specialist_integration_treat_reward():
     # Define the input state with a training plan using positive reinforcement
     state = BehaviorState(
         behavior="sit",
-        draft_plan="Step 1: Use a treat to lure the dog into a sit position."
+        draft_plan="Step 1: Use a treat to lure the dog into a sit position.",
+        dog_details=""
     )
 
     # Call the action method
