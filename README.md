@@ -11,23 +11,23 @@
 ## Installation
 
 ### Requirements
-- Python 3.10 or higher (tested with 3.10 and 3.11)
+- Python 3.11 
 - OpenAI API Key (if you want to use the default LLM gtp-4o-mini)
 - Tavily API Key (if you want to use the *Internet Research Agent*)
 
 ### Installation
 1. Clone the repository
 
-    `git clone https://github.com/JoergSchultz-TWT/AIAgents_TrainingPlan_Dev.git`
+    `git clone https://github.com/Tier-Wohl-Team/AIAgents_TrainingPlan.git`
 2. change into directory
 
-    `cd AIAgents_TrainingPlan_Dev`
+    `cd AIAgents_TrainingPlan`
 3. Create virtual environment
 
-    `python3.x -m venv AIAgents_TrainingPlan_Dev`
+    `python3 -m venv AIAgents_TrainingPlan`
 4. Activate environment
 
-    `source AIAgents_TrainingPlan_Dev/bin/activate`
+    `source AIAgents_TrainingPlan/bin/activate`
 5. Install the required packages using pip (in local environment)
 
    `pip install -r requirements.txt`
