@@ -32,7 +32,9 @@
 ## Usage
 
 ### Command line
+`python .\start_TrainingPlanTeam.py`
 
 ### With LangGraph Studio (local)
-
+`langgraph dev`
+Use `CTRL-C`to stop
 ### Running Tests
