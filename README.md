@@ -11,7 +11,7 @@
 ## Installation
 
 ### Requirements
-- Python 3.11 
+- Python 3.11 (LangGraph CLI only supports Python >= 3.11.)
 - OpenAI API Key (if you want to use the default LLM gtp-4o-mini)
 - Tavily API Key (if you want to use the *Internet Research Agent*)
 
@@ -23,15 +23,22 @@
 
     `cd AIAgents_TrainingPlan`
 3. Create virtual environment
+   
+    (i) If your python version is < 3.11, you might use conda to build a 3.11 environment
 
-    `python3 -m venv AIAgents_TrainingPlan`
-4. Activate environment
-
-    `source AIAgents_TrainingPlan/bin/activate`
-5. Install the required packages using pip (in local environment)
+       ```
+       conda create -n AIAgentes_TrainingPlan python=3.11
+       conda activate
+       ```
+    (ii) **Or** use venv
+       ```
+       python3 -m venv AIAgents_TrainingPlan`
+       source AIAgents_TrainingPlan/bin/activate
+       ```
+4. Install the required packages using pip (in local environment)
 
    `pip install -r requirements.txt`
-6. Create `.env`
+5. Create `.env`
 
    copy `.env_sample` to `.env` and add your API keys
 
