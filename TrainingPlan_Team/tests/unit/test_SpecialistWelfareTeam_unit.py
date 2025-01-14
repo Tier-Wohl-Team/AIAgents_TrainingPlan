@@ -35,7 +35,7 @@ def test_graph_nodes_and_edges():
     graph = team.graph
 
     # Assert nodes
-    expected_nodes = {START, DistanceDurationSpecialist.NAME, WelfareSpecialist.NAME}
+    expected_nodes = {START, DistanceDurationSpecialist.NAME, WelfareSpecialist.NAME, "collect_plan"}
     assert set(graph.nodes.keys()) == expected_nodes, "Graph nodes are incorrect."
 
 
