@@ -94,9 +94,9 @@ class SpecialistsTeamLeader(BaseAgent):
         distance_duration = llm.invoke(
             [SystemMessage(content=prompt)] + [HumanMessage(content=state["outline_plan"])])
         training = json.loads(distance_duration.content)
-        for step in training["training_steps"]:
-            print("Sending to: ", node_mapping.get(step["mode"], "other"))
-            print(step)
+        # for step in training["training_steps"]:
+        #     print("Sending to: ", node_mapping.get(step["mode"], "other"))
+        #     print(step)
         return [Send(node_mapping.get(step["mode"], "other"), step)
                 for step in training["training_steps"]
                 ]

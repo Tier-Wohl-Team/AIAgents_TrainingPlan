@@ -17,8 +17,8 @@ class SpecialistWelfareTeam:
 
         """Create a team graph dynamically with the specified specialist agent."""
         def should_continue(state):
-            print("In should_continue")
-            print(state)
+            # print("In should_continue")
+            # print(state)
             if state.get("welfare_review", "") == "The plan is good.":
                 state["is_finished"] = True
                 state["plans"] = [(state["task"], state["draft_plan"])]

@@ -98,7 +98,7 @@ class DistanceDurationSpecialist(BaseAgent):
             """)
         training_steps = "\n\n".join([f"{step}: {variation}" for training_step in
                                      training_steps for step, variation in training_step.items()])
-        print(training_steps)
+        # print(training_steps)
         messages = [
             SystemMessage(content=background_story),
             HumanMessage(content=task_prompt.format(
@@ -112,7 +112,7 @@ class DistanceDurationSpecialist(BaseAgent):
                 welfare_review=state.get("welfare_review", "")
             ))
         ]
-        print(messages)
+        # print(messages)
         response = llm.invoke(messages)
         return {"draft_plan": response.content}
 
