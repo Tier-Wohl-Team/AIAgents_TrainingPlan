@@ -27,10 +27,11 @@
     (i) If your python version is < 3.11, you might use conda to build a 3.11 environment
 
        ```
-       conda create -n AIAgentes_TrainingPlan python=3.11
+       conda create -n AIAgents_TrainingPlan python=3.11
        conda activate
        ```
     (ii) **Or** use venv
+
        ```
        python3 -m venv AIAgents_TrainingPlan`
        source AIAgents_TrainingPlan/bin/activate
@@ -38,9 +39,9 @@
 4. Install the required packages using pip (in local environment)
 
    `pip install -r requirements.txt`
-5. Create `.env`
+5. Add your API keys
 
-   copy `.env_sample` to `.env` and add your API keys
+   copy `TrainingPlan_Team/.env_sample` to `TrainingPlan_Team/.env` and add your API keys
 
 ## Usage
 

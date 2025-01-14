@@ -1,6 +1,7 @@
 TrainingPlan_Team/.env
 .env
 .langgraph_api
+.idea
 tmp
 plans
-AIAgents_TrainingPlan_Dev.iml
+AIAgents_TrainingPlan.iml
