@@ -7,6 +7,14 @@ from states.state_types import TeamState
 @patch('agents.SpecialistsTeamLeader.Send', autospec=True)  # Mock the Send function
 @patch('agents.SpecialistsTeamLeader.SpecialistsTeamLeader.LLM', autospec=True)  # Mock the LLM
 def test_action_send_mock(mock_llm, mock_send):
+    # Configure the NODE_MAPPING
+    SpecialistsTeamLeader.task_team_mapping({
+        "duration": "distance_duration_welfare_graph",
+        "distance": "distance_duration_welfare_graph",
+        "cue introduction": "cue_welfare_graph",
+        "distractions": "distraction_welfare_graph",
+        "other": "generalist_team_graph"
+    })
     # Mock LLM response
     mock_llm_response = MagicMock()
     mock_llm_response.content = '''
