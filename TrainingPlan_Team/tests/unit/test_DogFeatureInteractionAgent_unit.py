@@ -3,7 +3,8 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock
 from agents.DogFeatureInteractionAgent import DogFeatureInteractionAgent
-from states.state_types import TeamState
+from states.state_types import TeamState, BehaviorResearchState
+
 
 @pytest.mark.unit
 @patch('agents.DogFeatureInteractionAgent.DogFeatureInteractionAgent.LLM', autospec=True)  # Mock the LLM class
@@ -18,9 +19,10 @@ def test_action_mock(mock_llm):
     mock_llm.invoke.return_value.content = json.dumps(fake_response_content)
 
     # Mock state
-    state = TeamState(
+    state = BehaviorResearchState(
         question="sit",
-        outline_plan="Step 1: Lure the dog into a sitting position\nStep 2: Reward the dog with a treat"
+        outline_plan="Step 1: Lure the dog into a sitting position\nStep 2: Reward the dog with a treat",
+        dog_details=""
     )
 
     # Mock input() to avoid blocking user interaction
@@ -29,13 +31,16 @@ def test_action_mock(mock_llm):
         response = DogFeatureInteractionAgent.action(state)
 
     # Extract the result
-    dog_details = response.get("dog_details", [])
-    assert len(dog_details) > 0, "No questions were processed."
+    new_dog_details = response.get("new_dog_details", [])
+    assert len(new_dog_details) > 0, "No questions were processed."
 
-    # Check that each detail entry has a query and answer
-    for detail in dog_details:
-        assert "query" in detail, f"Expected 'query' key in detail entry, got {detail}"
-        assert "answer" in detail, f"Expected 'answer' key in detail entry, got {detail}"
+    # Check that each detail entry is a tuple with a question and an answer
+    for detail in new_dog_details:
+        assert isinstance(detail, tuple), f"Expected tuple, got {type(detail)}"
+        assert len(detail) == 2, f"Expected tuple with 2 elements, got {len(detail)}"
+        question, answer = detail
+        assert isinstance(question, str), f"Expected question to be a string, got {type(question)}"
+        assert isinstance(answer, str), f"Expected answer to be a string, got {type(answer)}"
 
     # Verify the mock LLM was called
     mock_llm.invoke.assert_called_once()
