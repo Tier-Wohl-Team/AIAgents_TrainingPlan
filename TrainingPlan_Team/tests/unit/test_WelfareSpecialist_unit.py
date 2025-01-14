@@ -16,7 +16,8 @@ def test_welfare_specialist_action_plan_good(mock_llm):
     # Define a sample state
     state = BehaviorState(
         behavior="sit",
-        draft_plan="Step 1: Use a treat to lure the dog into a sit position."
+        draft_plan="Step 1: Use a treat to lure the dog into a sit position.",
+        dog_details=""
     )
 
     # Call the action method
@@ -49,7 +50,8 @@ def test_welfare_specialist_action_plan_needs_feedback(mock_llm):
     # Define a sample state
     state = BehaviorState(
         behavior="sit",
-        draft_plan="Step 1: Use a leash correction to enforce the sit position."
+        draft_plan="Step 1: Use a leash correction to enforce the sit position.",
+        dog_details=""
     )
 
     # Call the action method
