@@ -7,6 +7,24 @@
 
 # AI Agents for Animal Training Plan Generation
 
+## Abstract
+Effective animal training depends on well-structured training plans that ensure consistent progress and
+measurable outcomes. However, the creation of such plans is often time-intensive, repetitive, and detracts from
+hands-on training. Recent advancements in generative AI powered by large language models (LLMs) provide
+potential solutions but frequently fail to produce actionable, individualized plans tailored to specific
+contexts. This limitation is particularly significant given the diverse tasks performed by dogs—ranging from
+working roles in military and police operations to competitive sports—and the varying training philosophies
+among practitioners. To address these challenges, a modular agentic workflow framework is proposed, leveraging
+LLMs while mitigating their shortcomings. By decomposing the training plan generation process into specialized
+building blocks—autonomous agents that handle subtasks such as structuring progressions, ensuring welfare
+compliance, and adhering to team-specific standard operating procedures (SOPs)—this approach facilitates the
+creation of specific, actionable plans. The modular design further allows workflows to be tailored to the unique
+requirements of individual tasks and philosophies. As a proof of concept, a complete training plan generation
+workflow is presented, integrating these agents into a cohesive system. This framework prioritizes
+flexibility and adaptability, empowering trainers to create customized solutions while leveraging generative
+AI’s capabilities. In summary, agentic workflows bridge the gap between cutting-edge technology and the
+practical, diverse needs of the animal training community. As such, they could form a crucial foundation for
+advancing computer-assisted animal training methodologies.
 
 ## Installation
 
