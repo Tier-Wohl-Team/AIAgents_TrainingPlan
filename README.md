@@ -1,13 +1,13 @@
-
 <!-- ![An example Training Plan Team Implementation](documentation/images/TrainingPlanTeam.excalidraw.png) -->
 <div style="display: flex; justify-content: center; align-items: center;">
-    <img src="documentation/images/TrainingPlanTeam.excalidraw.png" width="640" 
+    <img src="documentation/images/HeroImage.png" width="640" 
         alt="An example Training Plan Team Implementation">
 </div>
 
 # AI Agents for Animal Training Plan Generation
 
 ## Abstract
+
 Effective animal training depends on well-structured training plans that ensure consistent progress and
 measurable outcomes. However, the creation of such plans is often time-intensive, repetitive, and detracts from
 hands-on training. Recent advancements in generative AI powered by large language models (LLMs) provide
@@ -26,29 +26,41 @@ AI’s capabilities. In summary, agentic workflows bridge the gap between cuttin
 practical, diverse needs of the animal training community. As such, they could form a crucial foundation for
 advancing computer-assisted animal training methodologies.
 
+## Try It Online
+
+You can explore and test the AI Agents for Animal Training Plan Generator directly in your browser—no installation
+required:
+
+👉 [https://trainingplans.computer-assisted-animaltraining.de/](https://trainingplans.computer-assisted-animaltraining.de/)
+
+This live demo allows you to experience the tool's capabilities and see how it generates customized training plans
+before setting it up locally.
+
 ## Installation
 
 ### Requirements
+
 - Python 3.11 (LangGraph CLI only supports Python >= 3.11.)
 - OpenAI API Key (if you want to use the default LLM gtp-4o-mini)
 - Tavily API Key (if you want to use the *Internet Research Agent*)
 
 ### Installation
+
 1. Clone the repository
 
-    `git clone https://github.com/Tier-Wohl-Team/AIAgents_TrainingPlan.git`
+   `git clone https://github.com/Tier-Wohl-Team/AIAgents_TrainingPlan.git`
 2. change into directory
 
-    `cd AIAgents_TrainingPlan`
+   `cd AIAgents_TrainingPlan`
 3. Create virtual environment
-   
-    (i) If your python version is < 3.11, you might use conda to build a 3.11 environment
+
+   (i) If your python version is < 3.11, you might use conda to build a 3.11 environment
 
        ```
        conda create -n AIAgents_TrainingPlan python=3.11
        conda activate
        ```
-    (ii) **Or** use venv
+   (ii) **Or** use venv
 
        ```
        python3 -m venv AIAgents_TrainingPlan`
@@ -64,9 +76,11 @@ advancing computer-assisted animal training methodologies.
 ## Usage
 
 ### Command line
+
 `python .\start_TrainingPlanTeam.py`
 
 ### With LangGraph Studio (local)
+
 see also https://langchain-ai.github.io/langgraph/how-tos/local-studio/
 
 `langgraph dev`
@@ -74,12 +88,13 @@ see also https://langchain-ai.github.io/langgraph/how-tos/local-studio/
 Use `CTRL-C`to stop
 
 ### Running Tests
+
 1. Unit Testing
 
-    `pytest -m unit`
+   `pytest -m unit`
 2. Integration Testing (calling the LLM)
 
-    `pytest -m integration`
+   `pytest -m integration`
 3. Probabilistic Output Validation
 
-    `pytest -m llm`
+   `pytest -m llm`
